@@ -286,6 +286,8 @@ def main():
         # ALL CODE TO DRAW SHOULD GO BELOW THIS COMMENT
         current_level.draw(screen)
         active_sprite_list.draw(screen)
+        text = font.render("Score: " + str(score), True, WHITE)
+        screen.blit(text, [10, 10])
 
         # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
 
