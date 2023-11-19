@@ -1,4 +1,5 @@
 import pygame
+from random import randint
 
 # Global constants
 
@@ -11,6 +12,19 @@ BLUE = (0, 0, 255)
 # Screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+
+
+class Ewok(pygame.sprite.Sprite):
+    # -- Methods
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load("images/ewok.png")
+        self.image.set_colorkey((255, 255, 255))
+        self.rect = self.image.get_rect()
+
+    def placement(self):
+        self.rect.x = randint(50, SCREEN_WIDTH - 50)
+        self.rect.y = randint(50, SCREEN_HEIGHT - 200)
 
 
 class Player(pygame.sprite.Sprite):
@@ -146,7 +160,6 @@ class Level(object):
 
         screen.blit(self.background, (0, 0))
         # # Draw the background
-        # screen.fill(BLUE)
 
         # Draw all the sprite lists that we have
         self.platform_list.draw(screen)
@@ -188,12 +201,17 @@ class Level_01(Level):
 def main():
     """Main Program"""
     pygame.init()
+    score = 0
+    font = pygame.font.Font(None, 36)
 
     # Set the height and width of the screen
     size = [SCREEN_WIDTH, SCREEN_HEIGHT]
     screen = pygame.display.set_mode(size)
 
     pygame.display.set_caption("Platformer Jumper")
+
+    # Create ewok
+    ewok = Ewok()
 
     # Create the player
     player = Player()
@@ -209,7 +227,11 @@ def main():
     active_sprite_list = pygame.sprite.Group()
     player.level = current_level
 
+    ewok.placement()
+    active_sprite_list.add(ewok)
+
     player.rect.x = 340
+    # Loop until the user clicks the close button.
     player.rect.y = SCREEN_HEIGHT - player.rect.height
     active_sprite_list.add(player)
 
@@ -238,6 +260,14 @@ def main():
                     player.stop()
                 if event.key == pygame.K_RIGHT and player.change_x > 0:
                     player.stop()
+
+        # Check for collisions between player and ewok
+        if pygame.sprite.collide_rect(player, ewok):
+            # Increase the score
+            score += 1
+            print("Score:", score)
+            # Respawn the ewok
+            ewok.placement()
 
         # Update the player.
         active_sprite_list.update()
