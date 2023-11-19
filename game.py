@@ -17,12 +17,8 @@ class Player(pygame.sprite.Sprite):
     # -- Methods
     def __init__(self):
         super().__init__()
-        width = 40
-        height = 60
-        self.image = pygame.Surface([width, height])
-        self.image.fill(RED)
-
-        # Set a referance to the image rect.
+        self.image = pygame.image.load("images/stormtrooper.png")
+        self.image.set_colorkey((255, 255, 255))
         self.rect = self.image.get_rect()
 
         # Set speed vector of player
@@ -115,15 +111,12 @@ class Player(pygame.sprite.Sprite):
 class Platform(pygame.sprite.Sprite):
     """Platform the user can jump on"""
 
-    def __init__(self, width, height):
+    def __init__(self):
         """Platform constructor. Assumes constructed with user passing in
         an array of 5 numbers like what's defined at the top of this
         code."""
         super().__init__()
-
-        self.image = pygame.Surface([width, height])
-        self.image.fill(GREEN)
-
+        self.image = pygame.image.load("images/platform.jpg")
         self.rect = self.image.get_rect()
 
 
@@ -140,7 +133,7 @@ class Level(object):
         self.player = player
 
         # Background image
-        self.background = None
+        self.background = pygame.image.load("images/background.jpg")
 
     # Update everythign on this level
     def update(self):
@@ -151,8 +144,9 @@ class Level(object):
     def draw(self, screen):
         """Draw everything on this level."""
 
-        # Draw the background
-        screen.fill(BLUE)
+        screen.blit(self.background, (0, 0))
+        # # Draw the background
+        # screen.fill(BLUE)
 
         # Draw all the sprite lists that we have
         self.platform_list.draw(screen)
@@ -171,16 +165,22 @@ class Level_01(Level):
 
         # Array with width, height, x, and y of platform
         level = [
-            [210, 70, 500, 500],
-            [210, 70, 200, 400],
-            [210, 70, 600, 300],
+            # [210, 70, 500, 500],
+            # [210, 70, 200, 400],
+            # [210, 70, 600, 300],
+            [200, 250],
+            [400, 570],
+            [400, 350],
+            [650, 450],
+            [650, 250],
+            [100, 570],
         ]
 
         # Go through the array above and add platforms
         for platform in level:
-            block = Platform(platform[0], platform[1])
-            block.rect.x = platform[2]
-            block.rect.y = platform[3]
+            block = Platform()
+            block.rect.x = platform[0]
+            block.rect.y = platform[1]
             block.player = self.player
             self.platform_list.add(block)
 
