@@ -2,20 +2,16 @@ import pygame
 from random import randint
 
 # Global constants
-
-# Colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
-# Screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 
 class Ewok(pygame.sprite.Sprite):
-    # -- Methods
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load("images/ewok.png")
@@ -149,44 +145,32 @@ class Level(object):
         # Background image
         self.background = pygame.image.load("images/background.jpg")
 
-    # Update everythign on this level
+    # Update everything on this level
     def update(self):
-        """Update everything in this level."""
         self.platform_list.update()
         self.enemy_list.update()
 
     def draw(self, screen):
-        """Draw everything on this level."""
-
         screen.blit(self.background, (0, 0))
-        # # Draw the background
-
-        # Draw all the sprite lists that we have
         self.platform_list.draw(screen)
         self.enemy_list.draw(screen)
 
 
-# Create platforms for the level
 class Level_01(Level):
     """Definition for level 1."""
 
     def __init__(self, player):
         """Create level 1."""
 
-        # Call the parent constructor
         Level.__init__(self, player)
 
-        # Array with width, height, x, and y of platform
         level = [
-            # [210, 70, 500, 500],
-            # [210, 70, 200, 400],
-            # [210, 70, 600, 300],
-            [200, 250],
-            [400, 570],
-            [400, 330],
+            [50, 200],
+            [50, 450],
+            [350, 570],
+            [350, 330],
             [650, 450],
             [650, 200],
-            [100, 570],
         ]
 
         # Go through the array above and add platforms
@@ -229,16 +213,10 @@ def main():
 
     ewok.placement()
     active_sprite_list.add(ewok)
-
-    player.rect.x = 340
-    # Loop until the user clicks the close button.
-    player.rect.y = SCREEN_HEIGHT - player.rect.height
+    player.rect.x = 400
+    player.rect.y = SCREEN_HEIGHT - player.rect.height - 100
     active_sprite_list.add(player)
-
-    # Loop until the user clicks the close button.
     done = False
-
-    # Used to manage how fast the screen updates
     clock = pygame.time.Clock()
 
     # -------- Main Program Loop -----------
@@ -261,44 +239,30 @@ def main():
                 if event.key == pygame.K_RIGHT and player.change_x > 0:
                     player.stop()
 
-        # Check for collisions between player and ewok
         if pygame.sprite.collide_rect(player, ewok):
-            # Increase the score
             score += 1
             print("Score:", score)
-            # Respawn the ewok
             ewok.placement()
 
-        # Update the player.
         active_sprite_list.update()
-
-        # Update items in the level
         current_level.update()
 
-        # If the player gets near the right side, shift the world left (-x)
         if player.rect.right > SCREEN_WIDTH:
             player.rect.right = SCREEN_WIDTH
 
-        # If the player gets near the left side, shift the world right (+x)
         if player.rect.left < 0:
             player.rect.left = 0
 
-        # ALL CODE TO DRAW SHOULD GO BELOW THIS COMMENT
         current_level.draw(screen)
         active_sprite_list.draw(screen)
         text = font.render("Score: " + str(score), True, WHITE)
         screen.blit(text, [10, 10])
 
-        # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
-
-        # Limit to 60 frames per second
         clock.tick(60)
 
         # Go ahead and update the screen with what we've drawn.
         pygame.display.flip()
 
-    # Be IDLE friendly. If you forget this line, the program will 'hang'
-    # on exit.
     pygame.quit()
 
 
