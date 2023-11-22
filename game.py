@@ -4,6 +4,7 @@ from Player import Player
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCORE = 0
 
 
 class Ewok(pygame.sprite.Sprite):
@@ -63,9 +64,42 @@ class Level_01(Level):
             self.platform_list.add(block)
 
 
+def reset(player, screen, current_level, active_sprite_list):
+    global SCORE
+    player.stop()
+    font = pygame.font.Font(None, 60)
+    text = font.render(f"You died. You caught {SCORE} ewoks", True, (255, 255, 255))
+    screen.blit(
+        text,
+        (
+            SCREEN_WIDTH // 2 - text.get_width() // 2,
+            SCREEN_HEIGHT // 2 - text.get_height() // 2,
+        ),
+    )
+    pygame.display.flip()
+
+    # Wait for 5 seconds
+    start_ticks = pygame.time.get_ticks()
+    while pygame.time.get_ticks() - start_ticks < 5000:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+
+    # Reset the player position and clear the screen
+    player.rect.x = 400
+    player.rect.y = SCREEN_HEIGHT - player.rect.height - 100
+    screen.fill((0, 0, 0))  # Clear the screen
+    current_level.draw(screen)  # Redraw the level
+    active_sprite_list.draw(screen)  # Redraw the sprites
+    pygame.display.flip()
+
+    SCORE = 0
+
+
 def main():
+    global SCORE
     pygame.init()
-    score = 0
     font = pygame.font.Font(None, 36)
     size = [SCREEN_WIDTH, SCREEN_HEIGHT]
     screen = pygame.display.set_mode(size)
@@ -107,8 +141,8 @@ def main():
                     player.stop()
 
         if pygame.sprite.collide_rect(player, ewok):
-            score += 1
-            print("Score:", score)
+            SCORE += 1
+            print("Score:", SCORE)
             ewok.placement()
 
         active_sprite_list.update()
@@ -120,9 +154,12 @@ def main():
         if player.rect.left < 0:
             player.rect.left = 0
 
+        if player.rect.top > SCREEN_HEIGHT + 50:
+            reset(player, screen, current_level, active_sprite_list)
+
         current_level.draw(screen)
         active_sprite_list.draw(screen)
-        text = font.render("Score: " + str(score), True, (255, 255, 255))
+        text = font.render("Ewoks caught: " + str(SCORE), True, (255, 255, 255))
         screen.blit(text, [10, 10])
 
         clock.tick(60)
