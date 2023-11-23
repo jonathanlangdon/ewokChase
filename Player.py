@@ -11,10 +11,7 @@ class Player(pygame.sprite.Sprite):
         self.change_y = 0
         self.level = None
 
-    def update(self):
-        self.calc_grav()
-        self.rect.x += self.change_x
-
+    def x_collisions(self):
         block_hit_list_x = pygame.sprite.spritecollide(
             self, self.level.platform_list, False
         )
@@ -24,8 +21,7 @@ class Player(pygame.sprite.Sprite):
             elif self.change_x < 0:
                 self.rect.left = block.rect.right
 
-        self.rect.y += self.change_y
-
+    def y_collisions(self):
         block_hit_list_y = pygame.sprite.spritecollide(
             self, self.level.platform_list, False
         )
@@ -35,6 +31,20 @@ class Player(pygame.sprite.Sprite):
             elif self.change_y < 0:
                 self.rect.top = block.rect.bottom
             self.change_y = 0
+
+    def screen_side_collisions(self):
+        if self.rect.right > 800:
+            self.rect.right = 800
+        if self.rect.left < 0:
+            self.rect.left = 0
+
+    def update(self):
+        self.calc_grav()
+        self.rect.x += self.change_x
+        self.x_collisions()
+        self.rect.y += self.change_y
+        self.y_collisions()
+        self.screen_side_collisions()
 
     def calc_grav(self):
         if self.change_y == 0:

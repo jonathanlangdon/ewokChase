@@ -126,10 +126,6 @@ def game_loop(player, ewok, game_level):
             ewok.placement()
         ACTIVE_SPRITE_LIST.update()
         game_level.update()
-        if player.rect.right > SCRN_WIDTH:
-            player.rect.right = SCRN_WIDTH
-        if player.rect.left < 0:
-            player.rect.left = 0
         if player.rect.top > SCRN_HEIGHT + 50:
             gameReset(player, screen)
         game_level.draw(screen)
