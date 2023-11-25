@@ -2,8 +2,8 @@ import pygame
 from random import randint
 from Player import Player
 
-SCRN_WIDTH = 800
-SCRN_HEIGHT = 600
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
 SCORE = 0
 ACTIVE_SPRITE_LIST = []
 
@@ -27,21 +27,7 @@ class Platform(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
 
-class Level(object):
-    def __init__(self, player):
-        self.platform_list = pygame.sprite.Group()
-        self.player = player
-        self.background = pygame.image.load("images/background.jpg")
-
-    def update(self):
-        self.platform_list.update()
-
-    def draw(self, screen):
-        screen.blit(self.background, (0, 0))
-        self.platform_list.draw(screen)
-
-
-class GameLevel(Level):
+class GameLevel:
     def __init__(self, player):
         self.platform_list = pygame.sprite.Group()
         self.player = player
@@ -89,7 +75,7 @@ def handle_input(player):
 
 def resetPlayer(player):
     player.rect.x = 400
-    player.rect.y = SCRN_HEIGHT - player.rect.height - 100
+    player.rect.y = SCREEN_HEIGHT - player.rect.height - 100
 
 
 def gameReset(player, screen):
@@ -97,7 +83,7 @@ def gameReset(player, screen):
     player.stop()
     font = pygame.font.Font(None, 60)
     text = font.render(f"You died. You caught {SCORE} ewoks", True, (255, 255, 255))
-    screen.blit(text, (100, SCRN_HEIGHT // 2))
+    screen.blit(text, (100, SCREEN_HEIGHT // 2))
     pygame.display.flip()
     start_ticks = pygame.time.get_ticks()
     while pygame.time.get_ticks() - start_ticks < 5000:
@@ -115,7 +101,7 @@ def game_loop(player, ewok, game_level):
     global ACTIVE_SPRITE_LIST
     global SCORE
     font = pygame.font.Font(None, 36)
-    size = [SCRN_WIDTH, SCRN_HEIGHT]
+    size = [SCREEN_WIDTH, SCREEN_HEIGHT]
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
     done = False
@@ -126,7 +112,7 @@ def game_loop(player, ewok, game_level):
             ewok.placement()
         ACTIVE_SPRITE_LIST.update()
         game_level.update()
-        if player.rect.top > SCRN_HEIGHT + 50:
+        if player.rect.top > SCREEN_HEIGHT + 50:
             gameReset(player, screen)
         game_level.draw(screen)
         ACTIVE_SPRITE_LIST.draw(screen)
