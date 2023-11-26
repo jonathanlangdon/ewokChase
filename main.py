@@ -2,6 +2,7 @@ import pygame
 from random import randint
 from Player import Player
 
+# Global Variables
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCORE = 0
